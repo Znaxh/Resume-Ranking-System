@@ -64,7 +64,7 @@ Scores are normalized to [0,1], and penalties are applied for missing must-have 
 
 Clone repository
 ```bash
-git clone https://github.com/toshankanwar/Resume-Ranking-System.git
+git clone https://github.com/znaxh/Resume-Ranking-System.git
 cd Resume-Ranking-System
 ```
 Create virtual environment
@@ -121,12 +121,6 @@ All data anonymized (PII removed, locations generalized, consent obtained).
 3. Commit changes (`git commit -m 'Add NewFeature'`)
 4. Push to branch (`git push origin feature/NewFeature`)
 5. Open a Pull Request
-
-## 📧 Contact
-
-Name: Toshan Kanwar 
-Email: contact@toshankanwar.website  
-GitHub: [@toshankanwar](https://github.com/toshankanwar)
 
 ## 🙏 Acknowledgments
 
