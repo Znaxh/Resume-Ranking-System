@@ -1,0 +1,26 @@
+
+                James Wilson - Full Stack Developer
+                
+                EXPERIENCE (4 years)
+                Full Stack Developer - WebCorp (2021-2024)
+                • Developed 8+ web applications using React and Node.js
+                • Collaborated with design team to implement user interfaces
+                • Built REST APIs and integrated with third-party services
+                • Worked in Agile environment with 2-week sprints
+                • Participated in code reviews and pair programming
+                
+                Junior Full Stack Developer - TechStart (2020-2021)
+                • Built responsive websites using HTML, CSS, JavaScript
+                • Learned React and Node.js through mentorship program
+                • Fixed bugs and added new features to existing applications
+                • Wrote unit tests using Jest framework
+                
+                SKILLS
+                Frontend: React, JavaScript, HTML5, CSS3, Bootstrap
+                Backend: Node.js, Express.js, Python
+                Database: MongoDB, MySQL
+                Tools: Git, npm, webpack, VS Code
+                
+                EDUCATION
+                Bachelor of Science in Computer Science - State University (2020)
+                

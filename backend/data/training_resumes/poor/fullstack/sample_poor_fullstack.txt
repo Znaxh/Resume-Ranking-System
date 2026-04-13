@@ -1,0 +1,16 @@
+
+                Alex Johnson - Recent Graduate
+                
+                EDUCATION
+                Bachelor of Science in Computer Science (2024)
+                
+                PROJECTS
+                • Built a simple calculator using HTML, CSS, JavaScript
+                • Created a basic portfolio website
+                • Completed online tutorials for React
+                
+                SKILLS
+                HTML, CSS, JavaScript (basic level)
+                
+                Looking to start career in web development
+                

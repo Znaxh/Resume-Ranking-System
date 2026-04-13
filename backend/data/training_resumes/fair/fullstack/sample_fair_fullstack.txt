@@ -1,0 +1,22 @@
+
+                Lisa Park - Junior Developer
+                
+                EXPERIENCE (1.5 years)
+                Junior Full Stack Developer - SmallTech (2023-2024)
+                • Worked on small web projects using basic HTML, CSS, JavaScript
+                • Learning React through online courses and tutorials
+                • Made minor bug fixes in existing applications  
+                • Attended team meetings and daily standups
+                
+                Intern - WebStudio (2023)
+                • Built simple static websites
+                • Learned version control with Git
+                • Participated in code reviews as observer
+                
+                SKILLS
+                Basic: HTML, CSS, JavaScript, Git
+                Learning: React, Node.js
+                
+                EDUCATION
+                Computer Science Degree (Expected 2024)
+                

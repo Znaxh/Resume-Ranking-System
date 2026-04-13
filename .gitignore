@@ -1,0 +1,25 @@
+# Python / backend
+backend/.venv/
+backend/__pycache__/
+**/__pycache__/
+*.py[cod]
+backend/.pytest_cache/
+*.egg-info/
+backend/app.log
+backend/uploads/
+backend/evaluation_results/
+
+# Secrets
+.env
+.env.local
+**/.env
+
+# Node / frontend
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+# OS / IDE
+.DS_Store
+.idea/
+*.swp

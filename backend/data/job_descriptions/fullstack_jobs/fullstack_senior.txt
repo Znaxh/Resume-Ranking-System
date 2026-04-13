@@ -1,0 +1,26 @@
+
+            Senior Full Stack Developer Position
+            
+            REQUIREMENTS:
+            • 4+ years of experience in full stack web development
+            • Proficiency in React, Node.js, and modern JavaScript
+            • Experience with databases (PostgreSQL, MongoDB)
+            • Knowledge of cloud platforms (AWS preferred)
+            • Strong understanding of RESTful APIs and microservices
+            • Experience with version control (Git) and Agile methodologies
+            • Bachelor's degree in Computer Science or related field
+            
+            RESPONSIBILITIES:
+            • Design and develop scalable web applications
+            • Lead technical decisions and architecture choices
+            • Collaborate with cross-functional teams
+            • Mentor junior developers and conduct code reviews
+            • Ensure application performance, quality, and responsiveness
+            • Stay updated with emerging technologies and best practices
+            
+            PREFERRED:
+            • Experience with cloud services (AWS, Docker, Kubernetes)
+            • Knowledge of testing frameworks and CI/CD pipelines
+            • Leadership or team management experience
+            • Open source contributions
+            

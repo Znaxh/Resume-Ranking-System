@@ -1,0 +1,16 @@
+
+                Tom Chen - Entry Level Backend Developer
+                
+                EXPERIENCE (1 year)
+                Junior Backend Developer - StartCorp (2023-2024)
+                • Built simple APIs using Express.js
+                • Working with MySQL database
+                • Learning about REST API best practices
+                • Fixed minor bugs in existing code
+                
+                SKILLS
+                Node.js (basic), Express.js, MySQL, Git
+                
+                EDUCATION
+                Bachelor in Computer Science (2023)
+                

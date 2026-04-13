@@ -1,0 +1,35 @@
+
+                Michael Rodriguez - Senior Backend Architect
+                
+                EXPERIENCE (8 years)
+                Principal Backend Engineer - DataFlow Systems (2021-2024)
+                • Designed distributed microservices architecture handling 10M+ daily transactions
+                • Led backend team of 8 engineers across 3 product lines
+                • Implemented event-driven architecture using Apache Kafka and RabbitMQ
+                • Optimized system performance achieving 99.99% uptime
+                • Built auto-scaling solutions reducing infrastructure costs by 40%
+                
+                Senior Backend Developer - CloudTech (2019-2021)
+                • Developed high-performance APIs using Node.js and Python
+                • Implemented caching strategies with Redis reducing latency by 70%
+                • Built real-time data processing pipelines using Apache Spark
+                • Designed database schemas for multi-tenant SaaS platform
+                
+                Backend Developer - StartupLab (2017-2019)
+                • Built RESTful and GraphQL APIs using Express.js and Apollo
+                • Implemented authentication and authorization systems
+                • Developed background job processing using Queue systems
+                • Optimized database queries and implemented database indexing
+                
+                TECHNICAL EXPERTISE
+                Languages: Node.js, Python, Java, Go, TypeScript
+                Frameworks: Express.js, Django, Flask, Spring Boot, Fastify
+                Databases: PostgreSQL, MongoDB, MySQL, Redis, Cassandra, DynamoDB
+                Message Queues: Apache Kafka, RabbitMQ, AWS SQS, Redis Queue
+                Cloud: AWS, Google Cloud, Docker, Kubernetes, Terraform
+                Monitoring: New Relic, DataDog, Prometheus, Grafana
+                
+                EDUCATION
+                Master of Science in Distributed Systems - MIT (2017)
+                Bachelor in Computer Science - Carnegie Mellon (2015)
+                

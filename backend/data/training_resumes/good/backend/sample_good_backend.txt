@@ -1,0 +1,26 @@
+
+                David Kumar - Backend Developer
+                
+                EXPERIENCE (3 years)
+                Backend Developer - APITech (2022-2024)
+                • Developed REST APIs using Node.js and Express
+                • Worked with PostgreSQL and MongoDB databases
+                • Implemented user authentication and authorization
+                • Deployed applications on AWS EC2 instances
+                • Collaborated with frontend team for API integration
+                
+                Junior Backend Developer - CodeCorp (2021-2022)
+                • Built simple CRUD applications using Express.js
+                • Learned database design and SQL optimization
+                • Participated in daily standups and sprint planning
+                • Fixed bugs in existing backend services
+                
+                TECHNICAL SKILLS
+                Languages: Node.js, Python, JavaScript
+                Databases: PostgreSQL, MongoDB, MySQL
+                Cloud: AWS EC2, S3
+                Tools: Git, Postman, Docker (basic)
+                
+                EDUCATION
+                Bachelor in Information Technology (2021)
+                

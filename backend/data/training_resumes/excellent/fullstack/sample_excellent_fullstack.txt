@@ -1,0 +1,38 @@
+
+                Sarah Chen - Senior Full Stack Engineer
+                
+                PROFESSIONAL EXPERIENCE (7 years)
+                Senior Full Stack Developer - TechCorp (2020-2024)
+                • Architected and developed 12+ scalable web applications using React, Node.js, and microservices
+                • Led cross-functional team of 6 engineers, implementing Agile methodologies
+                • Optimized database queries reducing response time by 65%
+                • Implemented CI/CD pipelines using Jenkins and Docker, decreasing deployment time by 80%
+                • Mentored 4 junior developers, conducting code reviews and technical training
+                
+                Full Stack Developer - InnovateHub (2018-2020)
+                • Built responsive web applications using Angular, Express.js, and MongoDB
+                • Developed RESTful APIs serving 100k+ daily requests
+                • Integrated third-party services including payment gateways and analytics
+                • Collaborated with UX team to implement pixel-perfect designs
+                
+                TECHNICAL SKILLS
+                Frontend: React, Angular, Vue.js, TypeScript, JavaScript, HTML5, CSS3, SASS, Bootstrap
+                Backend: Node.js, Express.js, Django, Flask, Spring Boot
+                Databases: MongoDB, PostgreSQL, MySQL, Redis, Elasticsearch
+                Cloud & DevOps: AWS (EC2, S3, Lambda), Docker, Kubernetes, Jenkins, Git
+                Testing: Jest, Mocha, Selenium, Unit Testing, Integration Testing
+                
+                EDUCATION
+                Master of Science in Computer Science - Stanford University (2018)
+                Bachelor of Engineering in Software Engineering - UC Berkeley (2016)
+                
+                CERTIFICATIONS
+                • AWS Certified Solutions Architect
+                • Google Cloud Professional Developer
+                • Certified Kubernetes Administrator
+                
+                ACHIEVEMENTS
+                • Led development of e-commerce platform generating $2M+ revenue
+                • Open source contributor with 500+ GitHub stars
+                • Technical speaker at 3 international conferences
+                

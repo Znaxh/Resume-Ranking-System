@@ -1,0 +1,20 @@
+
+            Senior Backend Engineer Position
+            
+            REQUIREMENTS:
+            • 5+ years of backend development experience
+            • Expert knowledge of server-side languages (Node.js, Python, Java)
+            • Strong experience with databases and data modeling
+            • Experience with microservices architecture
+            • Knowledge of cloud platforms and DevOps practices
+            • Understanding of scalability, performance optimization
+            • Experience with message queues and distributed systems
+            
+            RESPONSIBILITIES:
+            • Design and implement robust backend systems
+            • Build and maintain APIs serving millions of requests
+            • Optimize database performance and queries
+            • Implement monitoring and alerting systems
+            • Lead technical architecture discussions
+            • Mentor team members and establish best practices
+            
