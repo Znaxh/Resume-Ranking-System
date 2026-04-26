@@ -128,9 +128,30 @@ def create_app(config_name='default'):
             {'value': 'fullstack', 'label': 'Full Stack Developer', 'icon': '🚀'},
             {'value': 'product_manager', 'label': 'Product Manager', 'icon': '📱'},
             {'value': 'designer', 'label': 'UI/UX Designer', 'icon': '🎭'},
+            {'value': 'qa_engineer', 'label': 'QA Engineer', 'icon': '🔍'},
+            {'value': 'security_engineer', 'label': 'Security Engineer', 'icon': '🛡️'},
             {'value': 'general', 'label': 'General', 'icon': '📋'}
         ]
         return jsonify(positions)
+
+    @app.route('/api/processing-status/<job_id>', methods=['GET'])
+    def processing_status_unavailable(job_id):
+        """Reserved for async jobs; ranking is synchronous today."""
+        return jsonify({
+            'error': (
+                'Background job processing is not implemented; '
+                'POST /api/process-resumes completes in the same HTTP request.'
+            ),
+            'job_id': job_id,
+        }), 501
+
+    @app.route('/api/cancel-processing/<job_id>', methods=['POST'])
+    def cancel_processing_unavailable(job_id):
+        """Reserved for async jobs; nothing to cancel for synchronous ranking."""
+        return jsonify({
+            'error': 'There are no background jobs to cancel; processing is synchronous.',
+            'job_id': job_id,
+        }), 501
     
     @app.route('/api/export-results', methods=['POST'])
     def export_results():
@@ -196,7 +217,7 @@ def create_app(config_name='default'):
             )
         except Exception as e:
             log.error(f"Export error: {e}")
-            return jsonify({'error': str(e)}), 500
+            return jsonify({'error': 'Export failed. Please try again.'}), 500
 
     @app.route('/api/supported-formats', methods=['GET'])
     def get_supported_formats():
@@ -460,7 +481,8 @@ def create_app(config_name='default'):
             
             return jsonify({
                 'success': False,
-                'error': error_msg,
+                'error': 'An internal error occurred while processing your request.',
+                'error_id': f"err_{int(datetime.now(timezone.utc).timestamp())}",
                 'timestamp': datetime.now(timezone.utc).isoformat()
             }), 500
     
@@ -498,7 +520,8 @@ def create_app(config_name='default'):
             })
             
         except Exception as e:
-            return jsonify({'error': str(e)}), 500
+            log.error(f"Academic folder setup error: {e}")
+            return jsonify({'error': 'Failed to set up academic folders.'}), 500
     
     @app.route('/api/academic/dataset-stats', methods=['GET'])
     def get_dataset_stats():
@@ -524,7 +547,8 @@ def create_app(config_name='default'):
             })
             
         except Exception as e:
-            return jsonify({'error': str(e), 'message': 'Setup academic folders first using /api/academic/setup-folders'}), 500
+            log.error(f"Dataset stats error: {e}")
+            return jsonify({'error': 'Failed to retrieve dataset statistics.', 'message': 'Setup academic folders first using /api/academic/setup-folders'}), 500
     
     @app.route('/api/academic/train-models', methods=['POST'])
     def train_academic_models():
@@ -594,6 +618,14 @@ def create_app(config_name='default'):
                         model = SVR(kernel='rbf', C=1.0, gamma='scale')
                         model.fit(X_train, y_train)
                         y_pred = model.predict(X_test)
+                    elif algorithm_name == 'xgboost':
+                        from xgboost import XGBRegressor
+                        model = XGBRegressor(
+                            n_estimators=100, max_depth=6,
+                            learning_rate=0.1, random_state=42
+                        )
+                        model.fit(X_train, y_train)
+                        y_pred = model.predict(X_test)
                     else:
                         continue
                     
@@ -618,7 +650,7 @@ def create_app(config_name='default'):
                     
                 except Exception as e:
                     log.error(f"Error training {algorithm_name}: {e}")
-                    training_results[algorithm_name] = {'error': str(e)}
+                    training_results[algorithm_name] = {'error': f'Training failed for {algorithm_name}'}
             
             return jsonify({
                 'success': True,
@@ -643,7 +675,7 @@ def create_app(config_name='default'):
             
         except Exception as e:
             log.error(f"Academic training error: {e}")
-            return jsonify({'error': str(e)}), 500
+            return jsonify({'error': 'Model training failed. Check server logs for details.'}), 500
     
     @app.route('/api/academic/evaluate-models', methods=['POST'])
     def evaluate_academic_models():
@@ -710,7 +742,8 @@ def create_app(config_name='default'):
             })
             
         except Exception as e:
-            return jsonify({'error': str(e)}), 500
+            log.error(f"Model evaluation error: {e}")
+            return jsonify({'error': 'Model evaluation failed. Check server logs for details.'}), 500
     
     # ===== HELPER FUNCTIONS =====
     
@@ -778,7 +811,7 @@ def create_app(config_name='default'):
                             
                     except Exception as e:
                         log.error(f"Error with academic model {method}: {e}")
-                        combined_result['errors'].append(f"{method}: {str(e)}")
+                        combined_result['errors'].append(f"{method}: processing failed")
                 
                 # Calculate combined score
                 if scores:
@@ -819,7 +852,10 @@ def create_app(config_name='default'):
     
     return app
 
+
+# WSGI entrypoint for Gunicorn / Docker (`app:app`). FLASK_ENV selects config (see Dockerfile).
+app = create_app(os.getenv('FLASK_ENV', 'development'))
+
 if __name__ == '__main__':
-    app = create_app(os.getenv('FLASK_ENV', 'development'))
     port = int(os.getenv('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=app.config['DEBUG'])

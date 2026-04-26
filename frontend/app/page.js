@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useTheme } from '../components/ThemeProvider'
 import { 
   Brain, 
@@ -8,39 +8,20 @@ import {
   Target, 
   Users, 
   ArrowRight, 
-  CheckCircle, 
-  Star, 
   TrendingUp,
   Award,
-  Shield,
   Sparkles,
   BarChart3,
   FileText,
   Cpu,
   Database,
   ChevronDown,
-  Play,
-  Quote
+  Play
 } from 'lucide-react'
 
 export default function HomePage() {
   const { theme } = useTheme()
   const [activeFeature, setActiveFeature] = useState(0)
-  const [statsCounter, setStatsCounter] = useState({ resumes: 0, accuracy: 0, time: 0 })
-
-  // Animated counter effect
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setStatsCounter(prev => ({
-        resumes: prev.resumes < 50000 ? prev.resumes + 1000 : 50000,
-        accuracy: prev.accuracy < 94.7 ? prev.accuracy + 0.1 : 94.7,
-        time: prev.time < 85 ? prev.time + 1 : 85
-      }))
-    }, 50)
-    
-    setTimeout(() => clearInterval(interval), 3000)
-    return () => clearInterval(interval)
-  }, [])
 
   const features = [
     {
@@ -78,30 +59,27 @@ export default function HomePage() {
   ]
 
   const stats = [
-    { label: 'Resumes Processed', value: statsCounter.resumes.toLocaleString(), suffix: '+', icon: FileText },
-    { label: 'Accuracy Rate', value: statsCounter.accuracy.toFixed(1), suffix: '%', icon: Target },
-    { label: 'Time Saved', value: statsCounter.time, suffix: '%', icon: TrendingUp },
-    { label: 'Companies Trust Us', value: '500', suffix: '+', icon: Award }
+    { label: 'Algorithms Available', value: '10', suffix: '+', icon: FileText },
+    { label: 'Analysis Methods', value: '4', suffix: '', icon: Target },
+    { label: 'File Formats', value: '4', suffix: '', icon: TrendingUp },
+    { label: 'Open Source', value: 'MIT', suffix: '', icon: Award }
   ]
 
-  const testimonials = [
+  const highlights = [
     {
-      name: 'Toshan kanwar',
-      role: 'HR Director, TechCorp',
-      content: 'This AI system has revolutionized our hiring process. We have reduced screening time by 80% while improving candidate quality.',
-      avatar: '👩‍💼'
+      title: 'Multi-Algorithm Analysis',
+      content: 'Combine BERT, cosine similarity, NER, and traditional ML algorithms for comprehensive resume evaluation with weighted scoring.',
+      icon: '🧠'
     },
     {
-      name: 'Mike Chen',
-      role: 'Talent Acquisition, StartupXYZ',
-      content: 'The BERT semantic analysis is incredible. It understands context better than any human screener I have worked with.',
-      avatar: '👨‍💻'
+      title: 'Skill Extraction',
+      content: 'Automatically identify and extract technical skills, experience levels, and qualifications from resumes using NLP.',
+      icon: '🎯'
     },
     {
-      name: 'Lisa Park',
-      role: 'Recruitment Lead, BigTech',
-      content: 'Bias-free, accurate, and lightning-fast. This tool has become indispensable for our recruitment team.',
-      avatar: '👩‍🔬'
+      title: 'Fair & Transparent',
+      content: 'Built-in fairness monitoring, score variance tracking, and detailed explanations for every ranking decision.',
+      icon: '⚖️'
     }
   ]
 
@@ -272,29 +250,22 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Testimonials */}
       <section className="py-20">
         <div className="container">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-              What Our Clients Say
+              Why ResumeRank?
             </h2>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
+            {highlights.map((highlight, index) => (
               <div key={index} className="card animate-slide-up" style={{ animationDelay: `${index * 0.2}s` }}>
-                <Quote className="w-8 h-8 text-primary-500 mb-4" />
-                <p className="text-gray-600 dark:text-gray-300 mb-6 text-lg italic">
-                  {testimonial.content}
+                <div className="text-4xl mb-4">{highlight.icon}</div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{highlight.title}</h3>
+                <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+                  {highlight.content}
                 </p>
-                <div className="flex items-center">
-                  <div className="text-3xl mr-4">{testimonial.avatar}</div>
-                  <div>
-                    <div className="font-bold text-gray-900 dark:text-white">{testimonial.name}</div>
-                    <div className="text-primary-600 dark:text-primary-400">{testimonial.role}</div>
-                  </div>
-                </div>
               </div>
             ))}
           </div>
@@ -309,16 +280,16 @@ export default function HomePage() {
             Ready to Transform Your Hiring?
           </h2>
           <p className="text-xl text-primary-100 mb-12 max-w-3xl mx-auto">
-            Join hundreds of companies using AI to make better, faster, and fairer hiring decisions.
+            Use AI to make better, faster, and fairer hiring decisions.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Link href="/predict" className="inline-flex items-center justify-center px-12 py-6 rounded-2xl bg-white text-primary-700 font-bold text-xl shadow-2xl hover:shadow-3xl transform hover:-translate-y-2 transition-all duration-300">
               <Zap className="w-6 h-6 mr-3" />
-              Start Free Trial
+              Start Ranking
             </Link>
-            <Link href="/contact" className="btn-ghost text-white border-white/30 hover:bg-white/10 text-xl">
-              <Users className="w-6 h-6 mr-3" />
-              Talk to Sales
+            <Link href="/about" className="btn-ghost text-white border-white/30 hover:bg-white/10 text-xl">
+              <FileText className="w-6 h-6 mr-3" />
+              View Documentation
             </Link>
           </div>
         </div>

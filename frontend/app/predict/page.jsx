@@ -4,6 +4,7 @@ import { processResumes, getPositions } from '../../lib/api'
 import FileUpload from '../../components/FileUpload'
 import MethodSelector from '../../components/MethodSelector'
 import ResultDisplay from '../../components/ResultDisplay'
+import ErrorBoundary from '../../components/ErrorBoundary'
 import { 
   Sparkles, 
   Zap, 
@@ -22,7 +23,6 @@ import {
   Network,
   TreePine,
   Target,
-  Globe,
   Layers
 } from 'lucide-react'
 
@@ -98,26 +98,23 @@ export default function PredictPage() {
         if (selectedMethods.includes('sbert')) {
           stages.push('Loading S-BERT model...', 'Computing sentence embeddings...')
         }
-        if (selectedMethods.includes('xlm')) {
-          stages.push('Loading XLM model...', 'Processing multilingual content...')
-        }
         if (selectedMethods.includes('xgboost')) {
-          stages.push('Training XGBoost classifier...', 'Running ensemble predictions...')
+          stages.push('Running XGBoost predictions...', 'Computing ensemble scores...')
         }
         if (selectedMethods.includes('random_forest')) {
-          stages.push('Building Random Forest...', 'Computing feature importance...')
+          stages.push('Running Random Forest analysis...', 'Evaluating feature importance...')
         }
         if (selectedMethods.includes('svm')) {
-          stages.push('Training SVM classifier...', 'Applying kernel methods...')
+          stages.push('Running SVM classification...', 'Computing kernel similarities...')
         }
         if (selectedMethods.includes('neural_network')) {
-          stages.push('Initializing neural network...', 'Training deep learning model...')
+          stages.push('Loading neural network model...', 'Running neural network inference...')
         }
         if (selectedMethods.includes('cosine')) {
           stages.push('Computing TF-IDF vectors...', 'Calculating cosine similarities...')
         }
         if (selectedMethods.includes('jaccard')) {
-          stages.push('Extracting skill sets...', 'Computing Jaccard similarities...')
+          stages.push('Analyzing term frequencies...', 'Computing BM25 rankings...')
         }
         if (selectedMethods.includes('ner')) {
           stages.push('Running named entity recognition...', 'Extracting skills and experience...')
@@ -180,7 +177,6 @@ export default function PredictPage() {
     bert: Brain,
     distilbert: Zap,
     sbert: Network,
-    xlm: Globe,
     xgboost: TreePine,
     random_forest: Database,
     svm: Target,
@@ -467,7 +463,9 @@ We are looking for a Senior Software Engineer with 3+ years of experience in Rea
                   Results from {methods.length} AI algorithm{methods.length !== 1 ? 's' : ''}, sorted by combined confidence score
                 </p>
               </div>
-              <ResultDisplay results={results} />
+              <ErrorBoundary fallbackMessage="Failed to display results. Please try processing again.">
+                <ResultDisplay results={results} />
+              </ErrorBoundary>
             </div>
           )}
         </div>

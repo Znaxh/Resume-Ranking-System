@@ -1,7 +1,7 @@
 import os
 import tempfile
 from typing import List, Dict, Any
-import PyPDF2
+from pypdf import PdfReader
 from docx import Document
 import logging
 import time
@@ -71,7 +71,7 @@ class FileProcessor:
             text = ""
             with open(temp_file_path, 'rb') as pdf_file:
                 try:
-                    pdf_reader = PyPDF2.PdfReader(pdf_file)
+                    pdf_reader = PdfReader(pdf_file)
                     
                     for page_num, page in enumerate(pdf_reader.pages):
                         try:
@@ -170,6 +170,59 @@ class FileProcessor:
                 except Exception as e:
                     logger.warning(f"Failed to delete temp file {temp_file_path}: {e}")
     
+    def _extract_text_from_legacy_doc(self, file) -> str:
+        """Extract text from legacy .doc files using subprocess fallback"""
+        temp_file_path = None
+        try:
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.doc') as temp_file:
+                temp_file_path = temp_file.name
+                file.seek(0)
+                temp_file.write(file.read())
+                temp_file.flush()
+
+            import subprocess
+            try:
+                result = subprocess.run(
+                    ['antiword', temp_file_path],
+                    capture_output=True, text=True, timeout=30
+                )
+                if result.returncode == 0 and result.stdout.strip():
+                    return result.stdout.strip()
+            except FileNotFoundError:
+                pass
+
+            try:
+                result = subprocess.run(
+                    ['libreoffice', '--headless', '--convert-to', 'txt:Text', '--outdir',
+                     os.path.dirname(temp_file_path), temp_file_path],
+                    capture_output=True, text=True, timeout=60
+                )
+                txt_path = temp_file_path.rsplit('.', 1)[0] + '.txt'
+                if os.path.exists(txt_path):
+                    with open(txt_path, 'r', encoding='utf-8', errors='replace') as f:
+                        text = f.read()
+                    os.unlink(txt_path)
+                    if text.strip():
+                        return text.strip()
+            except FileNotFoundError:
+                pass
+
+            logger.warning("Neither antiword nor libreoffice available for .doc conversion, attempting python-docx fallback")
+            return self.extract_text_from_docx(file)
+
+        except Exception as e:
+            logger.error(f"Legacy .doc extraction failed: {e}")
+            raise Exception(
+                "Failed to extract text from .doc file. "
+                "For best results, convert to .docx or .pdf format."
+            )
+        finally:
+            if temp_file_path and os.path.exists(temp_file_path):
+                try:
+                    os.unlink(temp_file_path)
+                except Exception:
+                    pass
+
     def process_files(self, files: List) -> List[Dict[str, Any]]:
         """Process multiple uploaded files"""
         processed_files = []
@@ -199,8 +252,13 @@ class FileProcessor:
                 
                 if file_extension == 'pdf':
                     text = self.extract_text_from_pdf(file)
-                elif file_extension in ['docx', 'doc']:
+                elif file_extension == 'docx':
                     text = self.extract_text_from_docx(file)
+                elif file_extension == 'doc':
+                    text = self._extract_text_from_legacy_doc(file)
+                elif file_extension == 'txt':
+                    file.seek(0)
+                    text = file.read().decode('utf-8', errors='replace')
                 else:
                     raise Exception(f"Unsupported file type: {file_extension}")
                 

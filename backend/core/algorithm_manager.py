@@ -23,9 +23,9 @@ except ImportError:
 # Similarity analyzers
 from algorithms.similarity.cosine_similarity import CosineSimilarityAnalyzer
 try:
-    # Ensure this import points to a strict-skill Jaccard, not cosine
-    from algorithms.similarity.jaccard_similarity import JaccardSimilarityAnalyzer
+    from algorithms.similarity.jaccard_similarity import BM25Analyzer, JaccardSimilarityAnalyzer
 except ImportError:
+    BM25Analyzer = None
     JaccardSimilarityAnalyzer = None
 
 from algorithms.similarity.ner_analyzer import NERAnalyzer
@@ -78,10 +78,11 @@ class AlgorithmManager:
 
         # Similarity models
         registry['cosine'] = CosineSimilarityAnalyzer
-        if JaccardSimilarityAnalyzer:
-            registry['jaccard'] = JaccardSimilarityAnalyzer
+        if BM25Analyzer:
+            registry['bm25'] = BM25Analyzer
         else:
-            registry['jaccard'] = CosineSimilarityAnalyzer  # Warn at init time
+            registry['bm25'] = CosineSimilarityAnalyzer
+        registry['jaccard'] = registry['bm25']
 
         # Entity extraction
         registry['ner'] = NERAnalyzer
@@ -133,7 +134,7 @@ class AlgorithmManager:
                         algorithm_config.setdefault('boost_terms', True)
                         algorithm_config.setdefault('section_aware', True)
 
-                    elif name == 'jaccard':
+                    elif name in ('bm25', 'jaccard'):
                         algorithm_config.setdefault('mode', 'strict_skill_coverage')
                         algorithm_config.setdefault('must_have_weight', 0.60)
                         algorithm_config.setdefault('should_have_weight', 0.30)
@@ -155,8 +156,8 @@ class AlgorithmManager:
                         algorithm_config.setdefault('model_type', mtype)
                         algorithm_config.setdefault('model_path', mpath)
 
-                    if name == 'jaccard' and self.algorithm_registry['jaccard'] is CosineSimilarityAnalyzer:
-                        logger.warning("JaccardAnalyzer not found; falling back to Cosine. Add algorithms/similarity/jaccard_similarity.py for strict coverage scoring.")
+                    if name in ('bm25', 'jaccard') and self.algorithm_registry.get('bm25') is CosineSimilarityAnalyzer:
+                        logger.warning("BM25Analyzer not found; falling back to Cosine. Add algorithms/similarity/jaccard_similarity.py for BM25 scoring.")
 
                     self.algorithms[name] = algorithm_class(algorithm_config)
                     if hasattr(self.algorithms[name], 'load_model'):
@@ -232,7 +233,8 @@ class AlgorithmManager:
             'distilbert': 0.10,
             'sbert': 0.25,
             'cosine': 0.20,
-            'jaccard': 0.10,
+            'bm25': 0.10,
+            'jaccard': 0.0,
             'ner': 0.10,
             'xgboost': 0.0,
             'random_forest': 0.0,

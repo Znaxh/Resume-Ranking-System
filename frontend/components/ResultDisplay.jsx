@@ -1,9 +1,19 @@
 'use client'
 import { useState } from 'react'
-import { Trophy, Medal, Award, Star, TrendingUp, Users, Clock, CheckCircle, Table, Grid3X3, Download, Eye } from 'lucide-react'
+import { Trophy, Medal, Award, Star, TrendingUp, Users, Clock, CheckCircle, Table, Grid3X3, Download, Eye, ChevronDown, AlertTriangle } from 'lucide-react'
 
 export default function ResultDisplay({ results }) {
   const [viewMode, setViewMode] = useState('cards') // 'cards' or 'table'
+  const [expandedResults, setExpandedResults] = useState(new Set())
+
+  const toggleExpand = (index) => {
+    setExpandedResults(prev => {
+      const next = new Set(prev)
+      if (next.has(index)) next.delete(index)
+      else next.add(index)
+      return next
+    })
+  }
   
   if (!results?.results) return null
 
@@ -47,29 +57,36 @@ export default function ResultDisplay({ results }) {
 
   const algorithms = getAlgorithms()
 
-  // Export to CSV function
-  const exportToCSV = () => {
-    const headers = ['Rank', 'Filename', ...algorithms.map(alg => `${alg.toUpperCase()} (%)`), 'Final Score (%)', 'Skills Count']
-    
-    const csvData = results.results.map(result => [
-      result.rank,
-      result.filename,
-      ...algorithms.map(alg => result.scores?.[alg] ? (result.scores[alg] * 100).toFixed(1) : 'N/A'),
-      result.final_score ? (result.final_score * 100).toFixed(1) : 'N/A',
-      result.extracted_skills?.length || 0
-    ])
-
-    const csvContent = [headers, ...csvData]
-      .map(row => row.map(cell => `"${cell}"`).join(','))
-      .join('\n')
-
-    const blob = new Blob([csvContent], { type: 'text/csv' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `resume_ranking_results_${new Date().toISOString().split('T')[0]}.csv`
-    a.click()
-    URL.revokeObjectURL(url)
+  const exportToCSV = async () => {
+    try {
+      const { exportResults } = await import('../lib/api')
+      const blob = await exportResults(results, 'csv')
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `resume_ranking_results_${new Date().toISOString().split('T')[0]}.csv`
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch {
+      const headers = ['Rank', 'Filename', ...algorithms.map(alg => `${alg.toUpperCase()} (%)`), 'Final Score (%)', 'Skills Count']
+      const csvData = results.results.map(result => [
+        result.rank,
+        result.filename,
+        ...algorithms.map(alg => result.scores?.[alg] ? (result.scores[alg] * 100).toFixed(1) : 'N/A'),
+        result.final_score ? (result.final_score * 100).toFixed(1) : 'N/A',
+        result.extracted_skills?.length || 0
+      ])
+      const csvContent = [headers, ...csvData]
+        .map(row => row.map(cell => `"${cell}"`).join(','))
+        .join('\n')
+      const blob = new Blob([csvContent], { type: 'text/csv' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `resume_ranking_results_${new Date().toISOString().split('T')[0]}.csv`
+      a.click()
+      URL.revokeObjectURL(url)
+    }
   }
 
   return (
@@ -98,10 +115,33 @@ export default function ResultDisplay({ results }) {
         </div>
         <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 text-center">
           <Clock className="w-8 h-8 mx-auto mb-3 text-blue-600" />
-          <div className="text-2xl font-bold text-gray-900 dark:text-white">{results.summary?.algorithms_used?.length || 0}</div>
-          <div className="text-sm text-gray-600 dark:text-gray-400">AI Methods</div>
+          <div className="text-2xl font-bold text-gray-900 dark:text-white">
+            {results.processing_time_seconds 
+              ? `${results.processing_time_seconds.toFixed(1)}s`
+              : `${results.summary?.algorithms_used?.length || 0}`
+            }
+          </div>
+          <div className="text-sm text-gray-600 dark:text-gray-400">
+            {results.processing_time_seconds ? 'Processing Time' : 'AI Methods'}
+          </div>
         </div>
       </div>
+
+      {/* Fairness Warning */}
+      {results.fairness_warning && (
+        <div className="mb-6 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800 flex items-start">
+          <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 mr-3 mt-0.5 flex-shrink-0" />
+          <div>
+            <h4 className="font-semibold text-amber-800 dark:text-amber-300 mb-1">Fairness Notice</h4>
+            <p className="text-amber-700 dark:text-amber-400 text-sm">{results.fairness_warning}</p>
+            {results.score_std_dev !== null && results.score_std_dev !== undefined && (
+              <p className="text-amber-600 dark:text-amber-500 text-xs mt-1">
+                Score standard deviation: {(results.score_std_dev * 100).toFixed(1)}%
+              </p>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* View Toggle and Export */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
@@ -342,6 +382,72 @@ export default function ResultDisplay({ results }) {
                       </span>
                     )}
                   </div>
+                </div>
+              )}
+
+              {/* Algorithm Details (expandable) */}
+              {result.algorithm_details && (
+                <div className="mt-4">
+                  <button
+                    onClick={() => toggleExpand(index)}
+                    className="flex items-center text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                  >
+                    <ChevronDown className={`w-4 h-4 mr-1 transition-transform ${expandedResults.has(index) ? 'rotate-180' : ''}`} />
+                    {expandedResults.has(index) ? 'Hide' : 'Show'} Algorithm Details
+                  </button>
+                  
+                  {expandedResults.has(index) && (
+                    <div className="mt-3 space-y-3 animate-fade-in">
+                      {Object.entries(result.algorithm_details).map(([alg, data]) => (
+                        <div key={alg} className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+                          <div className="flex items-center justify-between mb-2">
+                            <h5 className="font-semibold text-gray-900 dark:text-white capitalize">
+                              {alg.replace('_', ' ')} Analysis
+                            </h5>
+                            <span className={`text-sm font-bold ${getScoreColor(data.score)}`}>
+                              {(data.score * 100).toFixed(1)}%
+                            </span>
+                          </div>
+                          {data.details && (
+                            <div className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
+                              {data.details.algorithm_type && (
+                                <p>Type: {data.details.algorithm_type}</p>
+                              )}
+                              {data.details.coverage_ratio !== undefined && (
+                                <p>Coverage: {(data.details.coverage_ratio * 100).toFixed(1)}%</p>
+                              )}
+                              {data.details.skill_match_score !== undefined && (
+                                <p>Skill Match: {(data.details.skill_match_score * 100).toFixed(1)}%</p>
+                              )}
+                              {data.details.experience_score !== undefined && (
+                                <p>Experience Score: {(data.details.experience_score * 100).toFixed(1)}%</p>
+                              )}
+                              {data.details.max_years_experience !== undefined && (
+                                <p>Max Years Experience: {data.details.max_years_experience}</p>
+                              )}
+                              {data.details.top_matching_terms && (
+                                <div className="mt-2">
+                                  <p className="font-medium text-gray-700 dark:text-gray-300 mb-1">Top Matching Terms:</p>
+                                  <div className="flex flex-wrap gap-1">
+                                    {data.details.top_matching_terms.slice(0, 8).map((term, i) => (
+                                      <span key={i} className="px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded text-xs">
+                                        {typeof term === 'string' ? term : term.term}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                              {data.details.must_have_ok !== undefined && (
+                                <p className={data.details.must_have_ok ? 'text-green-600' : 'text-red-600'}>
+                                  Must-have skills: {data.details.must_have_ok ? 'All present' : `${data.details.missing_must_count} missing`}
+                                </p>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </div>

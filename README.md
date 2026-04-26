@@ -44,7 +44,7 @@ Client (multipart: resumes, job description, methods)
           v
 +---------------------------+
 | AlgorithmManager (parallel)|
-| cosine, jaccard, ner,      |
+| cosine, bm25/jaccard, ner, |
 | transformers, traditional ML|
 +-------------+-------------+
               |
@@ -65,7 +65,7 @@ Client (multipart: resumes, job description, methods)
 ## Algorithms (overview)
 
 - **Cosine similarity**: Term-based vector similarity between resume and job description text.
-- **Jaccard**: Set-style overlap on skills or tokens where configured.
+- **BM25**: Probabilistic ranking with term saturation and document length normalization (registered as both `bm25` and `jaccard` for backward compatibility).
 - **NER (spaCy)**: Entity-oriented signals and extracted skill-like spans for matching and display.
 - **BERT / DistilBERT / SBERT**: Encoder-based semantic similarity where enabled (models load on demand; heavy methods increase memory use).
 - **XGBoost, Random Forest, SVM, Neural Network**: Optional supervised-style scorers when models are available or academic mode is used.
@@ -132,8 +132,10 @@ If the API is not on `http://localhost:5000`, set `NEXT_PUBLIC_API_BASE` in `fro
 | POST | `/api/rank` | Same handler as `process-resumes` |
 | POST | `/api/validate-files` | Validate uploads without scoring |
 | POST | `/api/export-results` | JSON body with results; CSV export |
+| GET | `/api/processing-status/<id>` | Reserved; returns **501** (ranking is synchronous) |
+| POST | `/api/cancel-processing/<id>` | Reserved; returns **501** (no background jobs) |
 
-Extended implementation (benchmarks, cache-aware paths, richer health) is also mounted under `/v2/api/...`.
+Extended implementation (benchmarks, cache-aware paths, richer health) is also mounted under `/v2/api/...` (e.g. `GET /v2/api/algorithm-benchmarks`).
 
 ## API versioning headers
 
@@ -183,9 +185,16 @@ From the repository root:
 docker compose up --build
 ```
 
-The API service uses two Gunicorn workers and mounts `backend/uploads` for persistent uploads. Provide environment variables via `backend/.env` as referenced in `docker-compose.yml`.
+The API service uses two Gunicorn workers and mounts `backend/uploads` for persistent uploads. Default variables come from committed `backend/.env.example`. Optionally copy it to `backend/.env` and edit (`cp backend/.env.example backend/.env`); Compose merges optional `.env` on top when present.
+
+The stack includes three services:
+- **api**: Flask backend with Gunicorn (port 5000)
+- **frontend**: Next.js application (port 3000)
+- **redis**: Cache backend for v2 API (port 6379)
 
 ## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, coding standards, and the pull request process. For a deeper look at the system design and algorithm pipeline, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 1. Fork the repository and create a branch for your change.
 2. Keep commits focused; match existing style and run tests for backend changes.
@@ -197,4 +206,4 @@ This project builds on the broader ecosystem of open tools, including Hugging Fa
 
 ## License
 
-See the repository’s `LICENSE` file if present.
+This project is licensed under the MIT License; see [`LICENSE`](LICENSE).

@@ -11,34 +11,21 @@ const api = axios.create({
   }
 })
 
-// Request interceptor for debugging
 api.interceptors.request.use(
-  (config) => {
-    console.log(`🚀 API Request: ${config.method?.toUpperCase()} ${config.url}`)
-    if (config.data instanceof FormData) {
-      console.log('📤 FormData fields:', Array.from(config.data.keys()))
-    }
-    return config
-  },
-  (error) => {
-    console.error('❌ Request Error:', error)
-    return Promise.reject(error)
-  }
+  (config) => config,
+  (error) => Promise.reject(error)
 )
 
-// Response interceptor for error handling
 api.interceptors.response.use(
-  (response) => {
-    console.log(`✅ API Response: ${response.config.url} - ${response.status}`)
-    return response
-  },
+  (response) => response,
   (error) => {
-    console.error('❌ Response Error:', error.response?.data || error.message)
     if (error.response?.status === 413) {
       throw new Error('File size too large. Please reduce file sizes or number of files.')
     }
     if (error.response?.status === 422) {
-      throw new Error('Invalid file format. Please upload PDF or DOCX files only.')
+      throw new Error(
+        'Invalid request or file format. Allowed types include PDF, DOCX, DOC, and TXT.'
+      )
     }
     if (error.response?.status >= 500) {
       throw new Error('Server error. Please try again later.')
@@ -81,7 +68,6 @@ export async function processResumes({
   // Add resume files
   files.forEach((file, index) => {
     form.append('resumes', file)
-    console.log(`📎 Adding file ${index + 1}: ${file.name} (${file.size} bytes)`)
   })
   
   // Add job description
@@ -93,7 +79,6 @@ export async function processResumes({
   // Add selected algorithms
   methods.forEach((method, index) => {
     form.append('methods', method)
-    console.log(`🧠 Algorithm ${index + 1}: ${method}`)
   })
   
   // Add processing options
@@ -124,17 +109,13 @@ export async function processResumes({
       },
       // Progress tracking
       onUploadProgress: (progressEvent) => {
-        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-        console.log(`📤 Upload Progress: ${percentCompleted}%`)
+        Math.round((progressEvent.loaded * 100) / progressEvent.total)
       }
     })
     
-    console.log('✅ Processing completed successfully')
     return response.data
     
   } catch (error) {
-    console.error('❌ Processing failed:', error)
-    
     if (error.response?.data?.error) {
       throw new Error(error.response.data.error)
     }
@@ -159,7 +140,6 @@ export async function getPositions() {
     if (data && Array.isArray(data.positions)) return data.positions
     return []
   } catch (error) {
-    console.error('Failed to fetch positions:', error)
     // Return fallback positions if API fails
     return [
       { value: 'sde', label: 'Software Development Engineer', icon: '💻' },
@@ -184,7 +164,6 @@ export async function getSupportedFormats() {
     const response = await api.get('/api/supported-formats')
     return response.data
   } catch (error) {
-    console.error('Failed to fetch supported formats:', error)
     // Return fallback format info
     return {
       formats: ['.pdf', '.docx', '.doc'],
@@ -208,26 +187,15 @@ export async function getAvailableAlgorithms() {
     const response = await api.get('/api/algorithms')
     return response.data
   } catch (error) {
-    console.error('Failed to fetch algorithms:', error)
-    // Return fallback algorithm info
+    // Mirrors backend `get_algorithm_status()` shape when offline
     return {
-      deepLearning: [
-        { id: 'bert', name: 'BERT', available: true },
-        { id: 'distilbert', name: 'DistilBERT', available: true },
-        { id: 'sbert', name: 'S-BERT', available: true },
-        { id: 'xlm', name: 'XLM', available: false }
+      available_algorithms: [
+        'bert', 'distilbert', 'sbert',
+        'xgboost', 'random_forest', 'svm', 'neural_network',
+        'cosine', 'jaccard', 'ner'
       ],
-      traditionalML: [
-        { id: 'xgboost', name: 'XGBoost', available: true },
-        { id: 'random_forest', name: 'Random Forest', available: true },
-        { id: 'svm', name: 'SVM', available: true },
-        { id: 'neural_network', name: 'Neural Network', available: true }
-      ],
-      similarity: [
-        { id: 'cosine', name: 'TF-IDF Cosine', available: true },
-        { id: 'jaccard', name: 'Jaccard', available: true },
-        { id: 'ner', name: 'NER', available: true }
-      ]
+      loaded_algorithms: [],
+      algorithm_details: {}
     }
   }
 }
@@ -242,8 +210,11 @@ export async function getProcessingStatus(jobId) {
     const response = await api.get(`/api/processing-status/${jobId}`)
     return response.data
   } catch (error) {
-    console.error('Failed to fetch processing status:', error)
-    throw new Error('Failed to get processing status')
+    const msg =
+      error.response?.data?.error ||
+      error.message ||
+      'Failed to get processing status'
+    throw new Error(msg)
   }
 }
 
@@ -257,8 +228,11 @@ export async function cancelProcessing(jobId) {
     const response = await api.post(`/api/cancel-processing/${jobId}`)
     return response.data
   } catch (error) {
-    console.error('Failed to cancel processing:', error)
-    throw new Error('Failed to cancel processing')
+    const msg =
+      error.response?.data?.error ||
+      error.message ||
+      'Failed to cancel processing'
+    throw new Error(msg)
   }
 }
 
@@ -277,7 +251,6 @@ export async function validateFiles(files) {
     })
     return response.data
   } catch (error) {
-    console.error('File validation failed:', error)
     throw new Error('File validation failed')
   }
 }
@@ -291,7 +264,6 @@ export async function getSystemHealth() {
     const response = await api.get('/api/health')
     return response.data
   } catch (error) {
-    console.error('Failed to fetch system health:', error)
     return { status: 'unknown', algorithms: [], message: 'Unable to connect to server' }
   }
 }
@@ -312,7 +284,6 @@ export async function exportResults(results, format = 'csv') {
     })
     return response.data
   } catch (error) {
-    console.error('Export failed:', error)
     throw new Error('Failed to export results')
   }
 }
@@ -323,10 +294,9 @@ export async function exportResults(results, format = 'csv') {
  */
 export async function getAlgorithmBenchmarks() {
   try {
-    const response = await api.get('/api/algorithm-benchmarks')
+    const response = await api.get('/v2/api/algorithm-benchmarks')
     return response.data
   } catch (error) {
-    console.error('Failed to fetch benchmarks:', error)
     return null
   }
 }

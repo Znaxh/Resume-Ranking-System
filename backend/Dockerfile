@@ -9,10 +9,12 @@ WORKDIR /app
 
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev
+RUN uv run python -m spacy download en_core_web_sm
 
 COPY . .
 
 ENV PATH="/app/.venv/bin:$PATH"
+ENV FLASK_ENV=production
 
 EXPOSE 5000
 

@@ -152,6 +152,20 @@ class NERAnalyzer(BaseAlgorithm):
             max_years = max(resume_experience['years']) if resume_experience['years'] else 0
             experience_score = min(1.0, max_years / 10.0)  # Normalize to max 10 years
             
+            # Track must-have skill coverage for penalty system
+            total_required = 0
+            missing_must = 0
+            for category, skills in self.skill_patterns.items():
+                required = [s for s in skills if s in job_description.lower()]
+                total_required += len(required)
+                if category in resume_skills:
+                    matched = {s['skill'] for s in resume_skills[category]}
+                    missing_must += len([s for s in required if s not in matched])
+                else:
+                    missing_must += len(required)
+
+            must_have_ok = missing_must == 0
+            
             # Combined score (weighted average)
             combined_score = (skill_score * 0.7) + (experience_score * 0.3)
             
@@ -165,7 +179,10 @@ class NERAnalyzer(BaseAlgorithm):
                     'experience_score': float(experience_score),
                     'max_years_experience': max_years,
                     'total_skill_categories': len(resume_skills),
-                    'companies_mentioned': len(set(resume_experience['companies']))
+                    'companies_mentioned': len(set(resume_experience['companies'])),
+                    'must_have_ok': must_have_ok,
+                    'missing_must_count': missing_must,
+                    'total_required_skills': total_required,
                 }
             }
             

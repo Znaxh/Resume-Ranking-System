@@ -2,7 +2,6 @@ import redis
 import json
 import hashlib
 from typing import Any, Optional, Dict
-import pickle
 import logging
 from datetime import datetime, timedelta
 
@@ -52,7 +51,7 @@ class CacheManager:
             cached_data = self.redis_client.get(full_key)
             
             if cached_data:
-                return pickle.loads(cached_data)
+                return json.loads(cached_data)
             
             return None
             
@@ -69,7 +68,9 @@ class CacheManager:
             full_key = f"{self.prefix}{key}" if not key.startswith(self.prefix) else key
             ttl = ttl or self.default_ttl
             
-            serialized_data = pickle.dumps(value)
+            # Using JSON instead of pickle for security (avoids arbitrary code execution
+            # on deserialization). Sacrifices some type fidelity for non-serializable types.
+            serialized_data = json.dumps(value, default=str).encode('utf-8')
             self.redis_client.setex(full_key, ttl, serialized_data)
             
             return True
@@ -163,8 +164,18 @@ class CacheManager:
         
         cache_key = f"embeddings:{model_name}:{text_hash}"
         
+        # Convert numpy arrays to lists for JSON serialization.
+        # Sacrifices type fidelity (caller gets lists back, not np.ndarray) for security.
+        serializable_embeddings = embeddings
+        try:
+            import numpy as np
+            if isinstance(embeddings, np.ndarray):
+                serializable_embeddings = embeddings.tolist()
+        except ImportError:
+            pass
+
         cache_data = {
-            'embeddings': embeddings,
+            'embeddings': serializable_embeddings,
             'timestamp': datetime.utcnow().isoformat(),
             'model': model_name
         }

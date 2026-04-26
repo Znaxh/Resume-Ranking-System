@@ -2,14 +2,14 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
-import { 
-  Mail, 
-  MessageSquare, 
-  Send, 
-  Github, 
-  Globe, 
-  MapPin, 
-  Clock, 
+import {
+  Mail,
+  MessageSquare,
+  Send,
+  Github,
+  Globe,
+  MapPin,
+  Clock,
   CheckCircle,
   ArrowRight,
   Phone,
@@ -41,10 +41,10 @@ export default function ContactPage() {
 
   const onSubmit = async (data) => {
     setIsSubmitting(true)
-    
+
     try {
       const formData = new FormData()
-      
+
       // Web3Forms configuration
       formData.append('access_key', process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY || 'b8a13edd-5d10-492a-992f-40dc5acd7849')
       formData.append('name', data.name)
@@ -53,7 +53,7 @@ export default function ContactPage() {
       formData.append('message', data.message)
       formData.append('from_name', 'ResumeRank AI Contact Form')
       formData.append('replyto', data.email)
-      
+
       const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         body: formData
@@ -65,7 +65,7 @@ export default function ContactPage() {
         setIsSubmitted(true)
         setSubmitMessage('Thank you! Your message has been sent successfully.')
         reset()
-        
+
         // Reset success state after 5 seconds
         setTimeout(() => {
           setIsSubmitted(false)
@@ -86,8 +86,8 @@ export default function ContactPage() {
     {
       icon: Mail,
       title: 'Email',
-      content: 'contact@toshankanwar.website',
-      link: 'mailto:contact@toshankanwar.website',
+      content: 'znaxh',
+      link: 'mailto:anurag.ps.contact@gmail.com',
       color: 'text-blue-600 dark:text-blue-400',
       bg: 'bg-blue-100 dark:bg-blue-900/30'
     },
@@ -149,7 +149,7 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-100/50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
-      
+
       {/* Background Effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-20 w-72 h-72 bg-primary-300/10 rounded-full blur-3xl animate-pulse-slow"></div>
@@ -158,20 +158,20 @@ export default function ContactPage() {
       </div>
 
       <div className="container relative z-10 py-8">
-        
+
         {/* Hero Section */}
         <div className="text-center mb-12 animate-fade-in">
           <div className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-primary-100 to-purple-100 dark:from-primary-900/30 dark:to-purple-900/30 text-primary-700 dark:text-primary-300 text-sm font-medium mb-6">
             <MessageSquare className="w-4 h-4 mr-2" />
             Get In Touch
           </div>
-          
+
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary-600 via-purple-600 to-primary-800 bg-clip-text text-transparent">
             Let's Connect
           </h1>
-          
+
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
-            Have questions about our AI resume ranking system? Ready to revolutionize your hiring process? 
+            Have questions about our AI resume ranking system? Ready to revolutionize your hiring process?
             Let's discuss how we can help you find the perfect candidates faster.
           </p>
         </div>
@@ -179,7 +179,7 @@ export default function ContactPage() {
         {/* Main Content Grid */}
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-3 gap-8 mb-12">
-            
+
             {/* Contact Form - Takes 2 columns */}
             <div className="lg:col-span-2">
               <div className="card animate-slide-in-left h-full">
@@ -204,10 +204,10 @@ export default function ContactPage() {
                 ) : (
                   <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     {/* Anti-spam honeypot */}
-                    <input 
-                      type="checkbox" 
-                      name="botcheck" 
-                      className="hidden" 
+                    <input
+                      type="checkbox"
+                      name="botcheck"
+                      className="hidden"
                       style={{ display: 'none' }}
                       {...register('botcheck')}
                     />
@@ -221,7 +221,7 @@ export default function ContactPage() {
                           type="text"
                           className={`input-field ${errors.name ? 'border-red-500 focus:border-red-500' : ''}`}
                           placeholder="Your full name"
-                          {...register('name', { 
+                          {...register('name', {
                             required: 'Full name is required',
                             maxLength: { value: 80, message: 'Name is too long' }
                           })}
@@ -238,7 +238,7 @@ export default function ContactPage() {
                           type="email"
                           className={`input-field ${errors.email ? 'border-red-500 focus:border-red-500' : ''}`}
                           placeholder="your.email@example.com"
-                          {...register('email', { 
+                          {...register('email', {
                             required: 'Email is required',
                             pattern: {
                               value: /^\S+@\S+$/i,
@@ -272,7 +272,7 @@ export default function ContactPage() {
                         rows={5}
                         className={`input-field resize-none ${errors.message ? 'border-red-500 focus:border-red-500' : ''}`}
                         placeholder="Tell us about your project, questions, or how we can help you optimize your hiring process..."
-                        {...register('message', { 
+                        {...register('message', {
                           required: 'Message is required',
                           minLength: { value: 10, message: 'Message should be at least 10 characters' }
                         })}
@@ -313,7 +313,7 @@ export default function ContactPage() {
 
             {/* Contact Info Sidebar */}
             <div className="space-y-6 animate-slide-in-right">
-              
+
               {/* Contact Details */}
               <div className="card">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Contact Information</h3>
@@ -412,7 +412,7 @@ export default function ContactPage() {
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">Why Choose ResumeRank AI?</h2>
               <p className="text-gray-600 dark:text-gray-400">Discover what makes our solution stand out</p>
             </div>
-            
+
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up">
               {features.map((feature, index) => {
                 const Icon = feature.icon

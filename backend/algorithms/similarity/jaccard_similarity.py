@@ -8,7 +8,7 @@ import math
 logger = logging.getLogger(__name__)
 
 
-class JaccardSimilarityAnalyzer(BaseAlgorithm):
+class BM25Analyzer(BaseAlgorithm):
     """
     BM25 (Best Matching 25) Ranking Algorithm
     
@@ -22,7 +22,7 @@ class JaccardSimilarityAnalyzer(BaseAlgorithm):
     """
     
     def __init__(self, config: dict = None):
-        super().__init__('jaccard', config)  # Keep name for compatibility
+        super().__init__('bm25', config)
         # BM25 parameters
         self.k1 = 1.5  # Term saturation parameter (1.2-2.0)
         self.b = 0.75  # Document length normalization (0-1)
@@ -229,3 +229,6 @@ class JaccardSimilarityAnalyzer(BaseAlgorithm):
         except Exception as e:
             logger.error(f"BM25 ranking failed: {e}", exc_info=True)
             return {'algorithm': self.name, 'score': 0.0, 'details': {'error': str(e)}}
+
+
+JaccardSimilarityAnalyzer = BM25Analyzer

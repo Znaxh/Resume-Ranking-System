@@ -90,11 +90,11 @@ export default function MethodSelector({ selectedMethods, setSelectedMethods }) 
         },
         { 
           id: 'jaccard', 
-          name: 'Jaccard Similarity', 
-          desc: 'Skill-focused similarity for competency matching',
+          name: 'BM25 Ranking', 
+          desc: 'Probabilistic ranking with term saturation and document length normalization',
           icon: Cpu,
           color: 'from-teal-500 to-cyan-500',
-          features: ['Skill matching', 'Set-based', 'Competency focused'],
+          features: ['Term saturation', 'Length normalization', 'Probabilistic ranking'],
           speed: 'Very Fast'
         },
         { 

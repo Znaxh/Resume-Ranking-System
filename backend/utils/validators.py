@@ -24,7 +24,7 @@ class RequestValidator:
         self.valid_algorithms = {
             'bert', 'distilbert', 'sbert',
             'xgboost', 'random_forest', 'svm', 'neural_network',
-            'cosine', 'jaccard', 'ner',
+            'cosine', 'jaccard', 'bm25', 'ner',
         }
         
         # Valid positions

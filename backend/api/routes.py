@@ -76,7 +76,7 @@ def get_routes_blueprint(app):
             logger.error(f"Health check failed: {e}")
             return jsonify({
                 'status': 'unhealthy',
-                'error': str(e),
+                'error': 'Health check failed',
                 'timestamp': datetime.now(timezone.utc).isoformat()
             }), 500
     
@@ -89,7 +89,7 @@ def get_routes_blueprint(app):
                 'available_algorithms': [
                     'bert', 'distilbert', 'sbert',
                     'xgboost', 'random_forest', 'svm', 'neural_network',
-                    'cosine', 'jaccard', 'ner',
+                    'cosine', 'bm25', 'jaccard', 'ner',
                 ],
                 'algorithm_categories': {
                     'deep_learning': {
@@ -105,7 +105,7 @@ def get_routes_blueprint(app):
                         'use_cases': ['Feature-based matching', 'Predictive scoring', 'Classification']
                     },
                     'similarity': {
-                        'algorithms': ['cosine', 'jaccard', 'ner'],
+                        'algorithms': ['cosine', 'bm25', 'ner'],
                         'description': 'Similarity and information extraction methods',
                         'strengths': ['Fast computation', 'Skill extraction', 'Keyword matching'],
                         'use_cases': ['Quick screening', 'Skill analysis', 'Keyword matching']
@@ -210,7 +210,7 @@ def get_routes_blueprint(app):
             
         except Exception as e:
             logger.error(f"File validation error: {e}")
-            return jsonify({'error': 'File validation failed', 'details': str(e)}), 500
+            return jsonify({'error': 'File validation failed'}), 500
     
     @api.route('/process-resumes', methods=['POST'])
     def process_resumes():
@@ -302,7 +302,7 @@ def get_routes_blueprint(app):
             
             return jsonify({
                 'success': False,
-                'error': error_msg,
+                'error': 'An internal error occurred while processing your request.',
                 'request_id': request_id,
                 'timestamp': datetime.now(timezone.utc).isoformat()
             }), 500
@@ -411,7 +411,7 @@ def get_routes_blueprint(app):
                 'available_algorithms': len(status.get('available_algorithms', []))
             }
         except Exception as e:
-            return {'status': 'unhealthy', 'error': str(e)}
+            return {'status': 'unhealthy', 'error': 'initialization failed'}
     
     def _check_file_processor() -> Dict[str, Any]:
         """Check file processor health"""
@@ -493,6 +493,13 @@ def get_routes_blueprint(app):
                 'strengths': ['Fast processing', 'Simple interpretation'],
                 'limitations': ['No semantic understanding', 'Keyword dependent']
             },
+            'bm25': {
+                'full_name': 'BM25 (Best Matching 25)',
+                'type': 'probabilistic_ranking',
+                'features': 'Term saturation, length normalization',
+                'strengths': ['Probabilistic ranking', 'Term saturation handling', 'Document length normalization'],
+                'limitations': ['No semantic understanding', 'Bag-of-words assumption']
+            },
             'ner': {
                 'full_name': 'Named Entity Recognition',
                 'type': 'information_extraction',
@@ -512,7 +519,7 @@ def get_routes_blueprint(app):
             },
             {
                 'use_case': 'Fast bulk processing',
-                'recommended': ['cosine', 'random_forest', 'jaccard'],
+                'recommended': ['cosine', 'random_forest', 'bm25'],
                 'description': 'Optimized for speed and throughput'
             },
             {
@@ -522,7 +529,7 @@ def get_routes_blueprint(app):
             },
             {
                 'use_case': 'Skill-focused analysis',
-                'recommended': ['ner', 'jaccard', 'cosine'],
+                'recommended': ['ner', 'bm25', 'cosine'],
                 'description': 'Specialized for technical skill matching'
             }
         ]
@@ -547,17 +554,23 @@ def get_routes_blueprint(app):
     def _generate_cache_key(files, job_description: str, position: str, methods: List[str]) -> str:
         """Generate cache key for request"""
         import hashlib
-        
-        # Create a hash of the key components
+
+        file_signatures = []
+        for f in files:
+            f.seek(0, 2)
+            size = f.tell()
+            f.seek(0)
+            file_signatures.append(f"{f.filename}:{size}")
+
         key_components = [
-            job_description[:1000],  # First 1000 chars
+            job_description[:1000],
             position,
             ','.join(sorted(methods)),
-            str(len(files))  # Number of files as proxy
+            '|'.join(sorted(file_signatures))
         ]
-        
+
         key_string = '|'.join(key_components)
-        return hashlib.md5(key_string.encode()).hexdigest()
+        return hashlib.sha256(key_string.encode()).hexdigest()
     
     def _format_processing_response(algorithm_results: Dict[str, Any], successful_files: List[Dict],
                                    failed_files: List[Dict], job_description: str, position: str,

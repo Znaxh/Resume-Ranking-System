@@ -7,7 +7,12 @@ load_dotenv()
 
 class Config:
     # Flask Settings
-    SECRET_KEY = os.getenv('SECRET_KEY', 'your-secret-key-here')
+    SECRET_KEY = os.getenv('SECRET_KEY')
+    if not SECRET_KEY:
+        import warnings
+        warnings.warn("SECRET_KEY not set — using random fallback (sessions will not persist across restarts)")
+        import secrets
+        SECRET_KEY = secrets.token_hex(32)
     DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
     RATELIMIT_ENABLED = os.getenv('RATELIMIT_ENABLED', 'true').lower() in ('1', 'true', 'yes')
     
@@ -26,15 +31,11 @@ class Config:
     ALGORITHM_TIMEOUT = 300  # 5 minutes
     BATCH_SIZE = 32
     
-    # Redis Settings (for caching and job queue)
+    # Redis Settings (Flask-Caching under /v2/api paths)
     REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
     CACHE_TYPE = 'RedisCache'
     CACHE_REDIS_URL = REDIS_URL
     CACHE_DEFAULT_TIMEOUT = 3600
-    
-    # Celery Settings
-    CELERY_BROKER_URL = REDIS_URL
-    CELERY_RESULT_BACKEND = REDIS_URL
     
     # Logging
     LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')

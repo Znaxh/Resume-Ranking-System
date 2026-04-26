@@ -1,0 +1,14 @@
+# Netlify build for the Next.js app in frontend/
+# Repo root has no package.json — without `base = "frontend"`, the build fails and the site 404s.
+# https://docs.netlify.com/build/frameworks/framework-setup-guides/nextjs/overview/
+
+[build]
+  base = "frontend"
+  command = "npm run build"
+  publish = ".next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[build.environment]
+  NODE_VERSION = "20"
