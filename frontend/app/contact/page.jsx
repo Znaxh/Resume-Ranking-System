@@ -94,16 +94,16 @@ export default function ContactPage() {
     {
       icon: Github,
       title: 'GitHub',
-      content: 'github.com/toshankanwar',
-      link: 'https://github.com/toshankanwar',
+      content: 'github.com/Znaxh',
+      link: 'https://github.com/Znaxh',
       color: 'text-gray-700 dark:text-gray-300',
       bg: 'bg-gray-100 dark:bg-gray-800'
     },
     {
       icon: Globe,
       title: 'Website',
-      content: 'toshankanwar.website',
-      link: 'https://toshankanwar.website',
+      content: 'anuragps.vercel.app',
+      link: 'https://anuragps.vercel.app/',
       color: 'text-green-600 dark:text-green-400',
       bg: 'bg-green-100 dark:bg-green-900/30'
     },
@@ -111,7 +111,7 @@ export default function ContactPage() {
       icon: Linkedin,
       title: 'LinkedIn',
       content: 'Connect professionally',
-      link: 'https://www.linkedin.com/in/toshan-kanwar-4683a1349/',
+      link: 'https://www.linkedin.com/in/pratapsinghanurag/',
       color: 'text-blue-700 dark:text-blue-300',
       bg: 'bg-blue-100 dark:bg-blue-900/30'
     }
@@ -372,14 +372,14 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="text-lg font-bold text-primary-900 dark:text-primary-100">Meet the Developer</h3>
-                    <p className="text-primary-700 dark:text-primary-300 text-sm">Toshan Kanwar</p>
+                    <p className="text-primary-700 dark:text-primary-300 text-sm">Anurag Pratap Singh</p>
                   </div>
                 </div>
                 <p className="text-primary-800 dark:text-primary-200 text-sm leading-relaxed mb-3">
                   Computer Science student passionate about AI, machine learning, and making hiring processes more efficient.
                 </p>
                 <Link
-                  href="https://toshankanwar.website"
+                  href="https://anuragps.vercel.app/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center text-primary-700 dark:text-primary-300 hover:text-primary-600 dark:hover:text-primary-200 font-medium text-sm group"

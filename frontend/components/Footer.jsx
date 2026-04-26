@@ -7,7 +7,7 @@ export default function Footer() {
       <div className="container py-12">
         {/* Main Footer Content */}
         <div className="grid md:grid-cols-4 gap-8 mb-8">
-          
+
           {/* Brand Section */}
           <div className="md:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
@@ -57,7 +57,7 @@ export default function Footer() {
         {/* Bottom Section */}
         <div className="border-t border-gray-200 dark:border-gray-700 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            
+
             {/* Copyright */}
             <div className="text-sm text-gray-600 dark:text-gray-400">
               © {new Date().getFullYear()} ResumeRank. All rights reserved.
@@ -68,13 +68,13 @@ export default function Footer() {
               <span>Designed and developed with</span>
               <Heart className="w-4 h-4 mx-1 text-red-500 fill-current" />
               <span>by</span>
-              <Link 
-                href="https://toshankanwar.website/" 
+              <Link
+                href="https://anuragps.vercel.app/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="ml-1 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors inline-flex items-center group"
               >
-                Toshan Kanwar
+                Anurag Pratap Singh
                 <ExternalLink className="w-3 h-3 ml-1 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </Link>
             </div>
